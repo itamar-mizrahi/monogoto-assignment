@@ -1,0 +1,56 @@
+[
+    {
+        "id": "http-in-post",
+        "type": "http in",
+        "url": "/post-message",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 100,
+        "wires": [
+            ["function-extract-data"]
+        ]
+    },
+    {
+        "id": "function-extract-data",
+        "type": "function",
+        "name": "Extract sender and content",
+        "func": "msg.payload.sender = msg.req.body.sender;\nmsg.payload.content = msg.req.body.content;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 100,
+        "wires": [
+            ["change-add-to-messages"]
+        ]
+    },
+    {
+        "id": "change-add-to-messages",
+        "type": "change",
+        "name": "Add to messages array",
+        "rules": [
+            {
+                "t": "set",
+                "p": "messages",
+                "pt": "global",
+                "to": "messages | push({ sender: payload.sender, content: payload.content })",
+                "tot": "jsonata"
+            }
+        ],
+        "x": 600,
+        "y": 100,
+        "wires": [
+            ["http-response"]
+        ]
+    },
+    {
+        "id": "http-response",
+        "type": "http response",
+        "name": "HTTP response",
+        "statusCode": "",
+        "headers": {},
+        "x": 850,
+        "y": 100,
+        "wires": []
+    }
+]
